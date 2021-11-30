@@ -1,4 +1,4 @@
-FROM ethereum/client-go:alltools-latest
+FROM javierron/geth
 
 RUN apk add --update git bash nodejs npm perl
 

@@ -1,4 +1,4 @@
-FROM javierron/geth:full-node
+FROM javierron/geth:subnode
 
 RUN apk add --update git bash nodejs npm perl
 

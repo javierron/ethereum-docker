@@ -1,7 +1,7 @@
 version: '2'
 services:
   bootstrap:
-    build: monitored-geth-client
+    build: bootnode
     restart: on-failure
     container_name: bootstrap
     hostname: bootstrap
@@ -18,9 +18,6 @@ services:
       - "30301:30301"
       - "30301:30301/udp"
       - "8545:8545"
-    # networks:
-    #   default:
-    #     ipv4_address: 172.27.0.3
   eth:
     build: monitored-geth-client
     restart: on-failure
@@ -48,8 +45,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "3000:3000"
-  mod-eth:
-    build: modified-geth-client
+  p2p-geth:
+    build: p2p-geth-client
     restart: on-failure
     links:
       - bootstrap
@@ -66,6 +63,24 @@ services:
       - "30303/udp"
       - "8545"
     command: '--datadir=~/.ethereum/devchain --http.corsdomain="*" --networkid=20211234 --http --bootnodes="enode://7056aeb5f9eea6d2636de0e0ca5205dab3f70ee9ce8397349ac8aedd2e8e5700f72c73b71dfd565ba5a95b145395821e5a1a52ddf2f9c1e2ccf87be9f347f27a@bootstrap:30301" --netrestrict 172.27.0.0/24 --nat=extip:LOCAL_IP'
+  subnode-geth:
+    build: subnode-geth-client
+    restart: on-failure
+    links:
+      - bootstrap
+      - netstats
+      - rabbitmq
+    entrypoint: /root/start.sh
+    volumes:
+      - ./files/password:/root/files/password:ro
+      - ./files/genesis.json:/root/files/genesis.json:ro
+      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "30303"
+      - "30303/udp"
+      - "8545"
+    command: '--datadir=~/.ethereum/devchain --networkid=20211234 --netrestrict 172.27.0.0/24 --nodiscover --nat=none'
   rabbitmq:
     image: rabbitmq:3
     hostname: my-rabbit

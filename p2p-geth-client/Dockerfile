@@ -1,4 +1,4 @@
-FROM javierron/geth
+FROM javierron/geth:p2p 
 
 RUN apk add --update git bash nodejs npm perl
 

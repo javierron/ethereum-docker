@@ -14,7 +14,7 @@
       "RPC_HOST"        : "localhost",
       "RPC_PORT"        : "8545",
       "LISTENING_PORT"  : "30303",
-      "INSTANCE_NAME"   : "XXX",
+      "INSTANCE_NAME"   : "KTH_FULLNODE",
       "WS_SERVER"       : "ws://netstats:3000",
       "WS_SECRET"       : "eth-net-stats-secret",
       "VERBOSITY"       : 2

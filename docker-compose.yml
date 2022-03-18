@@ -1,50 +1,50 @@
 version: '2'
 services:
-  bootstrap:
-    build: bootnode
-    restart: on-failure
-    container_name: bootstrap
-    hostname: bootstrap
-    links:
-      - netstats
-    entrypoint: bootnode
-    command: '--nodekeyhex=a436a28ef460af588091b37bde45685efcdcf7be97cb6d19aab190e8ae370308'
-    volumes:
-      - ./files/password:/root/files/password:ro
-      - ./files/genesis.json:/root/files/genesis.json:ro
-      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "30301:30301"
-      - "30301:30301/udp"
-      - "8545:8545"
-  eth:
-    build: monitored-geth-client
-    restart: on-failure
-    links:
-      - bootstrap
-      - netstats
-    entrypoint: /root/start.sh
-    command: '--datadir=~/.ethereum/devchain --http.corsdomain="*" --networkid=20211234 --http --bootnodes="enode://7056aeb5f9eea6d2636de0e0ca5205dab3f70ee9ce8397349ac8aedd2e8e5700f72c73b71dfd565ba5a95b145395821e5a1a52ddf2f9c1e2ccf87be9f347f27a@bootstrap:30301"  --netrestrict 172.27.0.0/24 --nat=extip:LOCAL_IP'
-    volumes:
-      - ./files/password:/root/files/password:ro
-      - ./files/genesis.json:/root/files/genesis.json:ro
-      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
-      - /etc/localtime:/etc/localtime:ro
-    expose:
-      - "30303"
-      - "30303/udp"
-      - "8545"
-  netstats:
-    build: eth-netstats
-    restart: on-failure
-    container_name: netstats
-    environment:
-      - WS_SECRET=eth-net-stats-secret
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "3000:3000"
+  # bootstrap:
+  #   build: bootnode
+  #   restart: on-failure
+  #   container_name: bootstrap
+  #   hostname: bootstrap
+  #   links:
+  #     - netstats
+  #   entrypoint: bootnode
+  #   command: '--nodekeyhex=a436a28ef460af588091b37bde45685efcdcf7be97cb6d19aab190e8ae370308'
+  #   volumes:
+  #     - ./files/password:/root/files/password:ro
+  #     - ./files/genesis.json:/root/files/genesis.json:ro
+  #     - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+  #     - /etc/localtime:/etc/localtime:ro
+  #   ports:
+  #     - "30301:30301"
+  #     - "30301:30301/udp"
+  #     - "8545:8545"
+  # eth:
+  #   build: monitored-geth-client
+  #   restart: on-failure
+  #   links:
+  #     - bootstrap
+  #     - netstats
+  #   entrypoint: /root/start.sh
+  #   command: '--datadir=~/.ethereum/devchain --http.corsdomain="*" --networkid=20211234 --http --bootnodes="enode://7056aeb5f9eea6d2636de0e0ca5205dab3f70ee9ce8397349ac8aedd2e8e5700f72c73b71dfd565ba5a95b145395821e5a1a52ddf2f9c1e2ccf87be9f347f27a@bootstrap:30301"  --netrestrict 172.27.0.0/24 --nat=extip:LOCAL_IP'
+  #   volumes:
+  #     - ./files/password:/root/files/password:ro
+  #     - ./files/genesis.json:/root/files/genesis.json:ro
+  #     - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+  #     - /etc/localtime:/etc/localtime:ro
+  #   expose:
+  #     - "30303"
+  #     - "30303/udp"
+  #     - "8545"
+  # netstats:
+  #   build: eth-netstats
+  #   restart: on-failure
+  #   container_name: netstats
+  #   environment:
+  #     - WS_SECRET=eth-net-stats-secret
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #   ports:
+  #     - "3000:3000"
   
   p2p-geth:
     build: p2p-geth-client
@@ -56,36 +56,38 @@ services:
     entrypoint: /root/start.sh
     volumes:
       - ./files/password:/root/files/password:ro
-      - ./files/genesis.json:/root/files/genesis.json:ro
+      # - ./files/genesis.json:/root/files/genesis.json:ro
       - ./files/keystore:/root/.ethereum/devchain/keystore:rw
       - /etc/localtime:/etc/localtime:ro
     expose:
       - "30303"
       - "30303/udp"
       - "8545"
-    command: '--syncmode=full --datadir=~/.ethereum/devchain --http.corsdomain="*" --networkid=20211234 --http --bootnodes="enode://7056aeb5f9eea6d2636de0e0ca5205dab3f70ee9ce8397349ac8aedd2e8e5700f72c73b71dfd565ba5a95b145395821e5a1a52ddf2f9c1e2ccf87be9f347f27a@bootstrap:30301" --netrestrict 172.27.0.0/24 --nat=extip:LOCAL_IP'
-  
-  subnode-geth-10.12:
-    build: subnode-geth-10.12
-    restart: on-failure
-    links:
-      - bootstrap
-      - netstats
-      - rabbitmq
-    entrypoint: /root/start.sh
-    volumes:
-      - ./files/password:/root/files/password:ro
-      - ./files/genesis.json:/root/files/genesis.json:ro
-      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
-      - /etc/localtime:/etc/localtime:ro
-    expose:
-      - "30303"
-      - "30303/udp"
-      - "8545"
-    command: '--datadir=~/.ethereum/devchain --networkid=20211234 --netrestrict 172.27.0.0/24 --nodiscover --nat=none'
+    # command: '--datadir=~/.ethereum/devchain --http.corsdomain="*" --networkid=20211234 --http --bootnodes="enode://7056aeb5f9eea6d2636de0e0ca5205dab3f70ee9ce8397349ac8aedd2e8e5700f72c73b71dfd565ba5a95b145395821e5a1a52ddf2f9c1e2ccf87be9f347f27a@bootstrap:30301" --netrestrict 172.27.0.0/24 --nat=extip:LOCAL_IP'
+    command: '--maxpeers=5 --ropsten --datadir=~/.ethereum/devchain --http.corsdomain="*" --http --nat=extip:LOCAL_IP'
+    environment:
+      - SUBNODE_COUNT=2
+  # subnode-geth-10.12:
+  #   build: subnode-geth-10.12
+  #   restart: on-failure
+  #   links:
+  #     - bootstrap
+  #     - netstats
+  #     - rabbitmq
+  #   entrypoint: /root/start.sh
+  #   volumes:
+  #     - ./files/password:/root/files/password:ro
+  #     - ./files/genesis.json:/root/files/genesis.json:ro
+  #     - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+  #     - /etc/localtime:/etc/localtime:ro
+  #   expose:
+  #     - "30303"
+  #     - "30303/udp"
+  #     - "8545"
+  #   command: '--syncmode=full --datadir=~/.ethereum/devchain --networkid=20211234 --netrestrict 172.27.0.0/24 --nodiscover --nat=none'
   # besu subnode
 
-  subnode-geth-10.15:
+  subnode-geth-10.15-0:
     build: subnode-geth-10.15
     restart: on-failure
     links:
@@ -96,19 +98,54 @@ services:
     volumes:
       - ./files/password:/root/files/password:ro
       - ./files/genesis.json:/root/files/genesis.json:ro
-      - ./files/keystore:/root/.ethereum/devchain/keystore:rw
+      - ./files/chain-data/devchain-0:/root/.ethereum/devchain:rw
       - /etc/localtime:/etc/localtime:ro
-    expose:
-      - "30303"
-      - "30303/udp"
-      - "8545"
-    command: '--syncmode=full --verbosity=5 --datadir=~/.ethereum/devchain --networkid=20211234 --netrestrict 172.27.0.0/24 --nodiscover --nat=none'
+    # expose:
+      # - "30303"
+      # - "30303/udp"
+      # - "8545"
+    environment:
+      - SUBNODE_ID=0
+      - PORT_NUMBER=30303
+    command: '--syncmode=full --ropsten --datadir=~/.ethereum/devchain --netrestrict 172.27.0.0/24 --nodiscover --nat=none'
   
+  subnode-geth-10.15-1:
+    build: subnode-geth-10.15
+    restart: on-failure
+    links:
+      - bootstrap
+      - netstats
+      - rabbitmq
+    entrypoint: /root/start.sh
+    volumes:
+      - ./files/password:/root/files/password:ro
+      - ./files/genesis.json:/root/files/genesis.json:ro
+      - ./files/chain-data/devchain-1:/root/.ethereum/devchain:rw
+      - /etc/localtime:/etc/localtime:ro
+    # expose:
+      # - "30304"
+      # - "30304/udp"
+      # - "8545"
+    environment:
+      - SUBNODE_ID=1
+      - PORT_NUMBER=30304
+    command: '--syncmode=full --ropsten --datadir=~/.ethereum/devchain --netrestrict 172.27.0.0/24 --nodiscover --nat=none'
+
   rabbitmq:
     image: rabbitmq:3-management
-    hostname: my-rabbit
+    hostname: rabbitmq
     ports:
       - "15672:15672"
+      - "5672:5672"
+  
+  rand_sync:
+    image: javierron/rand_sync
+    restart: on-failure
+    environment:
+      - SUBNODE_COUNT=2
+    depends_on:
+      - rabbitmq
+
 
 networks:
   default:
